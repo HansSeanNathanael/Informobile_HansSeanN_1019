@@ -10,4 +10,7 @@
     <color name="overScrollEdgeColor">#fff761</color>
     <color name="topScreenBarColor">#636363</color>
     <color name="backgroundColor">#1d1d1d</color>
+
+
+    <color name="ic_main_icon_background">#1D1D1D</color>
 </resources>

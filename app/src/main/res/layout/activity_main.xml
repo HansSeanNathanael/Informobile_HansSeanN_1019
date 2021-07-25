@@ -9,6 +9,31 @@
 
     tools:context=".MainActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleX="@android:integer/config_longAnimTime"
+            android:src="@drawable/header_bar_rect"
+            app:layout_constraintTop_toTopOf="parent">
+        </ImageView>
+
+        <ImageButton
+            android:id="@+id/menu_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/ic_menu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ImageButton>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -42,36 +67,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ASIAN"
-                android:textSize="12sp"
-                android:textIsSelectable="false"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_margin="20dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ANIME"
-                android:textSize="12sp"
-                android:textIsSelectable="false"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_margin="20dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="HOLLYWOOD"
-                android:textSize="12sp"
-                android:textIsSelectable="false"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_margin="20dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="WATCHLIST"
                 android:textSize="12sp"
                 android:textIsSelectable="false"
@@ -82,7 +77,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-
 
 </LinearLayout>
