@@ -23,7 +23,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
 
-        android:id="@+id/textInputLayout"
+        android:id="@+id/emailInputLayout"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
 
@@ -39,21 +39,23 @@
         app:boxCornerRadiusBottomEnd="4dp"
 
         android:hint="@string/email"
-        android:textColorHint="@color/overScrollEdgeColor"
+        android:textColorHint="@color/primaryColor"
         app:boxBackgroundColor="@color/backgroundColor"
-        app:boxStrokeColor="@color/overScrollEdgeColor"
+        app:boxStrokeColor="@color/primaryColor"
         app:boxBackgroundMode="outline">
 
         <EditText
+            android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="@color/overScrollEdgeColor"
-            android:inputType="textEmailAddress" />
+            android:textColor="@color/primaryColor"
+            android:inputType="textEmailAddress">
+        </EditText>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
+        android:id="@+id/passwordInputLayout"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
 
@@ -61,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/emailInputLayout"
         app:layout_constraintVertical_bias="0.05"
 
         app:boxCornerRadiusBottomEnd="4dp"
@@ -70,34 +72,51 @@
         app:boxCornerRadiusTopStart="4dp"
 
         android:hint="@string/password"
-        android:textColorHint="@color/overScrollEdgeColor"
+        android:textColorHint="@color/primaryColor"
         app:boxBackgroundColor="@color/backgroundColor"
-        app:boxStrokeColor="@color/overScrollEdgeColor"
+        app:boxStrokeColor="@color/primaryColor"
         app:boxBackgroundMode="outline">
 
         <EditText
+            android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:singleLine="true"
-            android:textColor="@color/overScrollEdgeColor" />
+            android:textColor="@color/primaryColor">
+        </EditText>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/login_error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toTopOf="@+id/buttonLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/passwordInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
+        app:layout_constraintVertical_bias="0.1"
+
+        android:textColor="@color/redError"
+        android:drawablePadding="2dp">
+    </TextView>
+
     <Button
-        android:id="@+id/button_login"
+        android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
 
         android:text="@string/login"
         android:backgroundTint="@android:color/transparent"
         android:background="@drawable/button_border"
-        android:textColor="@color/overScrollEdgeColor"
-        >
+        android:textColor="@color/primaryColor">
     </Button>
 
 

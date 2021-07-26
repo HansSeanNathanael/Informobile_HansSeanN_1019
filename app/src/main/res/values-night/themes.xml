@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.PVts" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/overScrollEdgeColor</item>
+        <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/topScreenBarColor</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:windowBackground">@color/backgroundColor</item>
