@@ -1,9 +1,11 @@
 package com.tainka.pvts
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.MediaController
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tainka.pvts.databinding.ActivityMainMenuBinding
@@ -54,6 +56,8 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         setContentView(binding.root)
+
+        videoLoad("http://192.168.100.9/PVTS/video/Gochuumon%20wa%20Usagi%20Desu%20ka%2001%20(720p).mp4")
     }
 
 
@@ -66,5 +70,15 @@ class MainMenuActivity : AppCompatActivity() {
 
         val textAccountName = binding.textViewAccountName
         textAccountName.text = name
+    }
+
+    fun videoLoad(URL : String)
+    {
+        val videoPlayer = binding.videoPlayer
+        videoPlayer.setVideoURI(Uri.parse(URL))
+        videoPlayer.start()
+
+        var mediaCtrl = MediaController(this)
+        videoPlayer.setMediaController(mediaCtrl)
     }
 }

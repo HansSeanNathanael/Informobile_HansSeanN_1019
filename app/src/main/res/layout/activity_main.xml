@@ -116,7 +116,8 @@
         android:text="@string/login"
         android:backgroundTint="@android:color/transparent"
         android:background="@drawable/button_border"
-        android:textColor="@color/primaryColor">
+        android:textColor="@color/primaryColor"
+        android:clickable="true">
     </Button>
 
 

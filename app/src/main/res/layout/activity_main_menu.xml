@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
 
     tools:context=".MainMenuActivity">
+
+    <!--Main Layout-->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -19,6 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!--Top bar-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -75,13 +78,20 @@
                     android:text="Watch List...."
                     android:textColor="@color/white"></TextView>
 
+                <VideoView
+                    android:id="@+id/videoPlayer"
+                    android:layout_width="256dp"
+                    android:layout_height="144dp"
+                    android:layout_gravity="center">
+                </VideoView>
+
             </LinearLayout>
 
 
         </ScrollView>
     </LinearLayout>
 
-
+    <!--This is for setting menu layout-->
     <LinearLayout
         android:id="@+id/settingMenu"
         android:layout_width="match_parent"
