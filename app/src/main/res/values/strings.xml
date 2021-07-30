@@ -3,6 +3,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="wrong_account">Wrong Email or Password… (•_•)</string>
+    <string name="wrong_account">Wrong Email or Password... (•_•)</string>
+    <string name="connection_timeout">Connection timeout... (•_•)</string>
     <string name="logout">Log Out</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import com.tainka.pvts.databinding.ActivityMainBinding
+import java.io.IOException
 import java.net.URL
 import kotlin.concurrent.thread
 
@@ -13,8 +14,6 @@ class MainActivity : AppCompatActivity() {
     private var _activityBinding : ActivityMainBinding? = null
     private val binding get() = _activityBinding!!
 
-    private var loginButtonDisabled = false
-    private var loginSuccess = false
     private var loginResult = emptyList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,107 +23,34 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonLogin.setOnClickListener{
 
-            /*
-            val emailInput = binding.emailEditText.text.toString()
-            val passwordInput = binding.passwordEditText.text.toString()
-
-            var result : List<String> = emptyList()
-
-            thread {
-                val url = "http://192.168.100.9/PVTS/login.php?" + "email=" + emailInput + "&password=" + passwordInput
-                var connection = URL(url)
-                a = connection.readText()
-            }
-            */
-
-
             thread {
                 login()
             }
 
-            this@MainActivity.runOnUiThread {
-                while(true)
-                {
-                    if (loginButtonDisabled && binding.buttonLogin.isClickable)
-                    {
-                        binding.buttonLogin.isClickable = false
-                        binding.buttonLogin.text = "..."
-                    }
-                    else if (!loginButtonDisabled && !binding.buttonLogin.isClickable)
-                    {
-                        binding.buttonLogin.isClickable = true
-                        binding.buttonLogin.text = "LOGIN"
-
-                        val failedLoginMessage = binding.loginErrorMessage
-                        val errorIcon = ResourcesCompat.getDrawable(this@MainActivity.resources, R.drawable.ic_error, null)
-                        val theMessage = this@MainActivity.getString(R.string.wrong_account)
-                        val errorColor = ResourcesCompat.getColor(this@MainActivity.resources, R.color.redError, null)
-
-                        errorIcon?.setTint(errorColor)
-                        failedLoginMessage.setCompoundDrawablesWithIntrinsicBounds(errorIcon, null, null, null)
-                        failedLoginMessage.text = theMessage
-
-                        break
-                    }
-                    else if (loginSuccess)
-                    {
-                        break
-                    }
-                }
-                if (loginSuccess)
-                {
-                    val intent = Intent(this@MainActivity, MainMenuActivity::class.java)
-                    intent.putExtra("AccountName", loginResult[2])
-                    startActivity(intent)
-                }
-            }
-
-            /*
-            if (emailInput.equals("admin", ignoreCase = true) && passwordInput == "admin")
-            {
-
-                val intent = Intent(this@MainActivity, MainMenuActivity::class.java)
-                intent.putExtra("AccountName", "Admin")
-                startActivity(intent)
-            }
-            else
-            {
-                val failedLoginMessage = binding.loginErrorMessage
-                val errorIcon = ResourcesCompat.getDrawable(this@MainActivity.resources, R.drawable.ic_error, null)
-                val theMessage = this@MainActivity.getString(R.string.wrong_account)
-                val errorColor = ResourcesCompat.getColor(this@MainActivity.resources, R.color.redError, null)
-
-                errorIcon?.setTint(errorColor)
-                failedLoginMessage.setCompoundDrawablesWithIntrinsicBounds(errorIcon, null, null, null)
-                //failedLoginMessage.text = theMessage
-            }*/
         }
+
         setContentView(binding.root)
     }
 
-    fun ParseJSON(JSON : String) : List<String>
+    private fun ParseJSON(JSON : String) : List<String>
     {
         var returnVal : MutableList<String> = mutableListOf()
 
         var i = 0
-        var keyval = false
         while (i < JSON.length)
         {
             if (JSON[i] == '{')
             {
                 var str = ""
-                var line = 0
                 while (i < JSON.length)
                 {
                     if (JSON[i] == ':')
                     {
                         str = ""
-                        keyval = true;
                     }
                     else if (JSON[i] == ',' || JSON[i] == '}')
                     {
                         returnVal.add(str)
-                        keyval = false
                     }
                     else if (JSON[i] != '"')
                     {
@@ -140,24 +66,73 @@ class MainActivity : AppCompatActivity() {
         return returnVal
     }
 
-    fun login()
+    private fun login()
     {
-        loginButtonDisabled = true
+
+        this@MainActivity.runOnUiThread {
+            binding.buttonLogin.isClickable = false
+            binding.buttonLogin.text = "..."
+        }
 
         val emailInput = binding.emailEditText.text.toString()
         val passwordInput = binding.passwordEditText.text.toString()
 
         val url = "http://192.168.100.9/PVTS/login.php?" + "email=" + emailInput + "&password=" + passwordInput
 
-        loginResult = ParseJSON(URL(url).readText())
+        val connection = URL(url)
 
-        if (loginResult[0] == "success")
-        {
-            loginSuccess = true
+        try {
+            loginResult = ParseJSON(connection.readText())
+
+            this@MainActivity.runOnUiThread {
+                if (loginResult[0] == "success")
+                {
+                    binding.buttonLogin.isClickable = true
+                    binding.loginErrorMessage.text = ""
+                    binding.loginErrorMessage.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+
+                    val loginMessage = this@MainActivity.getString(R.string.login)
+                    binding.buttonLogin.text = loginMessage
+
+                    val intent = Intent(this@MainActivity, MainMenuActivity::class.java)
+                    intent.putExtra("AccountName", loginResult[2])
+                    startActivity(intent)
+                }
+                else
+                {
+                    val loginMessage = this@MainActivity.getString(R.string.login)
+                    binding.buttonLogin.text = loginMessage
+
+                    val failedLoginMessage = binding.loginErrorMessage
+                    val errorIcon = ResourcesCompat.getDrawable(this@MainActivity.resources, R.drawable.ic_error, null)
+                    val theMessage = this@MainActivity.getString(R.string.wrong_account)
+                    val errorColor = ResourcesCompat.getColor(this@MainActivity.resources, R.color.redError, null)
+
+                    errorIcon?.setTint(errorColor)
+                    failedLoginMessage.setCompoundDrawablesWithIntrinsicBounds(errorIcon, null, null, null)
+                    failedLoginMessage.text = theMessage
+                }
+            }
         }
-        else
+        catch (e: IOException)
         {
-            loginButtonDisabled = false
+            this@MainActivity.runOnUiThread {
+                val failedLoginMessage = binding.loginErrorMessage
+                val errorIcon = ResourcesCompat.getDrawable(this@MainActivity.resources, R.drawable.ic_error, null)
+                val theMessage = this@MainActivity.getString(R.string.connection_timeout)
+                val errorColor = ResourcesCompat.getColor(this@MainActivity.resources, R.color.redError, null)
+
+                errorIcon?.setTint(errorColor)
+                failedLoginMessage.setCompoundDrawablesWithIntrinsicBounds(errorIcon, null, null, null)
+                failedLoginMessage.text = theMessage
+
+                val loginMessage = this@MainActivity.getString(R.string.login)
+                binding.buttonLogin.text = loginMessage
+            }
+        }
+
+        this@MainActivity.runOnUiThread {
+            binding.buttonLogin.isClickable = true
         }
     }
 }
