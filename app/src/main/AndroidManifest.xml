@@ -13,9 +13,9 @@
         android:roundIcon="@mipmap/ic_main_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PVts">
-        <activity android:name=".MainMenuActivity"></activity>
+        <activity android:name=".activity.MainMenuActivity"></activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

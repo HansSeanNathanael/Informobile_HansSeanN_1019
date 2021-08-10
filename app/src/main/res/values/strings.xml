@@ -5,5 +5,6 @@
     <string name="login">Login</string>
     <string name="wrong_account">Wrong Email or Password... (•_•)</string>
     <string name="connection_timeout">Connection timeout... (•_•)</string>
+    <string name="password_not_compatible">Password just a-z, A-Z, and 0-9... (•_•)</string>
     <string name="logout">Log Out</string>
 </resources>

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
 
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <ImageView
         android:id="@+id/appLogo"
@@ -91,6 +91,7 @@
         android:id="@+id/login_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="256dp"
 
         app:layout_constraintBottom_toTopOf="@+id/buttonLogin"
         app:layout_constraintEnd_toEndOf="parent"

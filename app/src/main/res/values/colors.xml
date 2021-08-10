@@ -12,6 +12,7 @@
     <color name="backgroundColor">#1d1d1d</color>
     <color name="redError">#db2323</color>
     <color name="settingMenuColor">#242424</color>
+    <color name="movieCardBackgroundColor">#2b304a</color>
 
 
     <color name="ic_main_icon_background">#1D1D1D</color>

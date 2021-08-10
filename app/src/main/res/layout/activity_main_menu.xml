@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".MainMenuActivity">
+    tools:context=".activity.MainMenuActivity">
 
     <!--Main Layout-->
     <LinearLayout
@@ -69,21 +69,28 @@
                     android:padding="2dp"
                     android:src="@mipmap/ic_main_icon"></ImageView>
 
-
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="wrap_content">
 
-                    android:padding="8dp"
-                    android:text="Watch List...."
-                    android:textColor="@color/white"></TextView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
 
-                <VideoView
-                    android:id="@+id/videoPlayer"
-                    android:layout_width="256dp"
-                    android:layout_height="144dp"
-                    android:layout_gravity="center">
-                </VideoView>
+                        android:id="@+id/listCardView"
+
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+
+                        tools:listitem="@layout/movie_card"
+                        app:barrierMargin="4dp">
+
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
