@@ -102,18 +102,29 @@ class MainMenuActivity : AppCompatActivity() {
         var returnValue : String = ""
         val connection : URL = URL(url)
 
-        val text = connection.readText()
-        var firstIndex = text.indexOf("<body>", 0,true)
-        while(text[firstIndex] != '"' && text[firstIndex] != '[' && firstIndex < text.length)
+        while(true)
         {
-            firstIndex += 1
+            try
+            {
+                val text = connection.readText()
+                var firstIndex = text.indexOf("<body>", 0,true)
+                while(text[firstIndex] != '"' && text[firstIndex] != '[' && firstIndex < text.length)
+                {
+                    firstIndex += 1
+                }
+                var lastIndex = text.indexOf("</body>", firstIndex, true)
+                while(text[lastIndex] != '"' && text[lastIndex] != ']' && lastIndex > 0)
+                {
+                    lastIndex -= 1
+                }
+                returnValue = text.substring(firstIndex, lastIndex+1)
+                break
+            }
+            catch (e : IOException)
+            {
+
+            }
         }
-        var lastIndex = text.indexOf("</body>", firstIndex, true)
-        while(text[lastIndex] != '"' && text[lastIndex] != ']' && lastIndex > 0)
-        {
-            lastIndex -= 1
-        }
-        returnValue = text.substring(firstIndex, lastIndex+1)
         return returnValue
     }
 
