@@ -12,6 +12,7 @@ import com.tainka.pvts.R
 import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.databinding.ActivityMainMenuBinding
 import com.tainka.pvts.utilities.DummyCardViewTest
+import com.tainka.pvts.utilities.JSONEncodeParser
 import java.io.IOException
 import java.net.URL
 import java.util.*
@@ -64,6 +65,7 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         homeMovieCardAdapter = HomeViewAdapter()
+        homeMovieCardAdapter.setParentActivity(this)
 
         binding.listCardView.apply {
             layoutManager = LinearLayoutManager(this@MainMenuActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -97,114 +99,13 @@ class MainMenuActivity : AppCompatActivity() {
         textAccountName.text = name
     }
 
-    private fun getNetworkText(url : String) : String
-    {
-        var returnValue : String = ""
-        val connection : URL = URL(url)
 
-        while(true)
-        {
-            try
-            {
-                val text = connection.readText()
-                var firstIndex = text.indexOf("<body>", 0,true)
-                while(text[firstIndex] != '"' && text[firstIndex] != '[' && firstIndex < text.length)
-                {
-                    firstIndex += 1
-                }
-                var lastIndex = text.indexOf("</body>", firstIndex, true)
-                while(text[lastIndex] != '"' && text[lastIndex] != ']' && lastIndex > 0)
-                {
-                    lastIndex -= 1
-                }
-                returnValue = text.substring(firstIndex, lastIndex+1)
-                break
-            }
-            catch (e : IOException)
-            {
-
-            }
-        }
-        return returnValue
-    }
-
-    private fun retrieveJSONArrayFromNetwork(url : String) : List<Any>
-    {
-        var parsedList : MutableList<Any> = mutableListOf()
-        var jsonText : String = ""
-
-        while(true)
-        {
-            try
-            {
-                jsonText = getNetworkText(url)
-                break
-            }
-            catch (e :IOException)
-            {
-                continue
-            }
-        }
-
-        if (jsonText[0] != '[')
-        {
-            for (i in jsonText.indices)
-            {
-                if (jsonText[i] == '"')
-                {
-                    var secondMarkLocation = jsonText.indexOf('"', i+1, false)
-                    parsedList.add(jsonText.substring(i+1, secondMarkLocation))
-                }
-            }
-        }
-        else
-        {
-            parsedList.add(jsonText[0])
-
-            var i = 1
-            while (i < jsonText.length-1)
-            {
-                if (jsonText[i] == '[')
-                {
-                    parsedList.add(jsonText[i])
-                }
-                else if (jsonText[i] == ']')
-                {
-                    val newElement = ArrayList<Any>()
-                    while (parsedList.isNotEmpty())
-                    {
-                        if (parsedList.last() is Char && parsedList.last() == '[')
-                        {
-                            parsedList.removeLast()
-                            break
-                        }
-                        else
-                        {
-                            newElement.add(parsedList.last())
-                            parsedList.removeLast()
-                        }
-                    }
-                    parsedList.add(newElement)
-                }
-                else if (jsonText[i] == '"')
-                {
-                    val secondMarkLocation = jsonText.indexOf('"', i + 1, false)
-                    parsedList.add(jsonText.substring(i + 1, secondMarkLocation))
-                    i = secondMarkLocation
-                }
-
-                i++
-            }
-        }
-
-        return parsedList
-    }
 
     fun getHomeMovieCard(url: String) : List<DataMovie>
     {
         var homeMovieCardDataMovie : MutableList<DataMovie> = mutableListOf()
 
-        var jsonArrayFromNetwork = retrieveJSONArrayFromNetwork(url)
+        var jsonArrayFromNetwork = JSONEncodeParser.retrieveJSONArrayFromNetwork(url)
 
         for (i in jsonArrayFromNetwork)
         {
@@ -214,10 +115,10 @@ class MainMenuActivity : AppCompatActivity() {
                 {
                     homeMovieCardDataMovie.add(
                         DataMovie(
-                            i[3] as? Int ?: -1,
-                            i[1] as? String ?: "error",
-                            i[2] as? Int ?: -1,
-                            i[0] as? String ?: "error"
+                            (i[0] as? String ?: "-1").toInt(),
+                            i[2] as? String ?: "error",
+                            (i[1] as? String ?: "-1").toInt(),
+                            i[3] as? String ?: "error"
                         )
                     )
                 }
@@ -225,5 +126,18 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         return homeMovieCardDataMovie
+    }
+
+    fun processVideoPage(movie : DataMovie)
+    {
+        if (movie.seasonAmount == 0)
+        {
+            val intent = Intent(this@MainMenuActivity, VideoPageActivity::class.java)
+            intent.putExtra("url", movie.url)
+            intent.putExtra("season_id", "0")
+            intent.putExtra("movie_id", movie.id.toString())
+            intent.putExtra("filename", "GET FROM DATABASE")
+            startActivity(intent)
+        }
     }
 }

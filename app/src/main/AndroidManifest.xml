@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tainka.pvts">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_main_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PVts">
-        <activity android:name=".activity.MainMenuActivity"></activity>
+        <activity android:name=".activity.SeasonPageActivity"></activity>
+        <activity android:name=".activity.VideoPageActivity" />
+        <activity android:name=".activity.MainMenuActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:exported="true">

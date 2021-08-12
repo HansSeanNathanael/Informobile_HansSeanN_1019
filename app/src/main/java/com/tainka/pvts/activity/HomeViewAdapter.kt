@@ -1,15 +1,14 @@
 package com.tainka.pvts.activity
 
-import android.app.Activity
-import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.AnimationDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tainka.pvts.R
 import com.tainka.pvts.data.DataMovie
-import com.tainka.pvts.databinding.ActivityMainMenuBinding
 import com.tainka.pvts.databinding.MovieCardBinding
 import java.io.IOException
 import java.net.URL
@@ -19,6 +18,11 @@ class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
 
     val listMovieCard = ArrayList<DataMovie>()
     var mainMenuActivity = MainMenuActivity()
+
+    fun setParentActivity(parentActivity : MainMenuActivity)
+    {
+        mainMenuActivity = parentActivity
+    }
 
     fun setList(list : List<DataMovie>)
     {
@@ -30,11 +34,15 @@ class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
 
     inner class HomeViewHolder(private val binding: MovieCardBinding) : RecyclerView.ViewHolder(binding.root)
     {
+        lateinit var data : DataMovie
+
         fun bind(movie : DataMovie)
         {
             binding.movieTitle.text = movie.title
             binding.movieImage.setBackgroundResource(R.drawable.loading_animation)
             val animation = binding.movieImage.background as AnimationDrawable
+
+            data = movie
 
             animation.start()
 
@@ -62,6 +70,14 @@ class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
                     }
                 }
             }
+
+            binding.movieCard.setOnClickListener {
+                mainMenuActivity.apply {
+                    this.processVideoPage(data)
+                }
+            }
+
+            Log.d("bind", data.toString())
         }
     }
 

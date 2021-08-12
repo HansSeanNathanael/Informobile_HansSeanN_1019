@@ -7,4 +7,5 @@
     <string name="connection_timeout">Connection timeout... (•_•)</string>
     <string name="password_not_compatible">Password just a-z, A-Z, and 0-9... (•_•)</string>
     <string name="logout">Log Out</string>
+    <string name="video_player_ratio">16:9</string>
 </resources>
