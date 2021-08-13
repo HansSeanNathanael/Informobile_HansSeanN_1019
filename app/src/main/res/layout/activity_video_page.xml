@@ -16,7 +16,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
-        app:layout_constraintVertical_bias="0">
+        app:layout_constraintVertical_bias="0"
+
+        android:scaleType="centerCrop">
     </ImageView>
 
 
@@ -29,7 +31,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
-        android:layout_margin="32dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/backgroundColor">
 
         <VideoView
             android:id="@+id/video_player"
@@ -47,7 +52,67 @@
 
             app:layout_constraintVertical_bias="0">
         </VideoView>
-        
+
+        <LinearLayout
+            android:id="@+id/episode_rect_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_player"
+
+            app:layout_constraintVertical_bias="0.1"
+
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_poster"
+                android:layout_width="96dp"
+                android:layout_height="128dp"
+
+                android:layout_margin="8dp"
+                android:background="@drawable/loading_animation">
+            </ImageView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:text="@string/loading">
+                </TextView>
+                <TextView
+                    android:id="@+id/season"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+
+                    android:textColor="@color/white"
+                    android:textSize="12dp"
+                    android:text="@string/loading">
+                </TextView>
+                <TextView
+                    android:id="@+id/episode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textColor="@color/white"
+                    android:text="@string/loading"
+                    android:textSize="12dp">
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

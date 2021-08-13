@@ -8,4 +8,9 @@
     <string name="password_not_compatible">Password just a-z, A-Z, and 0-9... (•_•)</string>
     <string name="logout">Log Out</string>
     <string name="video_player_ratio">16:9</string>
+    <string name="poster_ratio">3:4</string>
+    <string name="title">$$title</string>
+    <string name="season">$$season</string>
+    <string name="episode">$$episode</string>
+    <string name="loading">loading...</string>
 </resources>

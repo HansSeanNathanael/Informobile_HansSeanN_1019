@@ -16,8 +16,8 @@ import kotlin.concurrent.thread
 
 class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
 
-    val listMovieCard = ArrayList<DataMovie>()
-    var mainMenuActivity = MainMenuActivity()
+    private val listMovieCard = ArrayList<DataMovie>()
+    private var mainMenuActivity = MainMenuActivity()
 
     fun setParentActivity(parentActivity : MainMenuActivity)
     {
@@ -73,7 +73,7 @@ class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
 
             binding.movieCard.setOnClickListener {
                 mainMenuActivity.apply {
-                    this.processVideoPage(data)
+                    this.processPage(data)
                 }
             }
 

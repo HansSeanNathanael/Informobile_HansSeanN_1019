@@ -128,15 +128,18 @@ class MainMenuActivity : AppCompatActivity() {
         return homeMovieCardDataMovie
     }
 
-    fun processVideoPage(movie : DataMovie)
+    fun processPage(movie : DataMovie)
     {
         if (movie.seasonAmount == 0)
         {
             val intent = Intent(this@MainMenuActivity, VideoPageActivity::class.java)
-            intent.putExtra("url", movie.url)
-            intent.putExtra("season_id", "0")
-            intent.putExtra("movie_id", movie.id.toString())
-            intent.putExtra("filename", "GET FROM DATABASE")
+            intent.putExtra("movie", movie)
+            startActivity(intent)
+        }
+        else if (movie.seasonAmount >= 2)
+        {
+            val intent = Intent(this@MainMenuActivity, SeasonPageActivity::class.java)
+            intent.putExtra("movie", movie)
             startActivity(intent)
         }
     }

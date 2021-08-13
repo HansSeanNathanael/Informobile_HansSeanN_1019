@@ -16,7 +16,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0">
+        app:layout_constraintVertical_bias="0"
+
+        >
     </ImageView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,20 +52,23 @@
         <LinearLayout
             android:id="@+id/movie_rect_data"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appLogo"
-            app:layout_constraintVertical_bias="0">
+            app:layout_constraintVertical_bias="0"
+
+            android:padding="16dp">
 
             <ImageView
                 android:id="@+id/movie_poster"
                 android:layout_width="96dp"
-                android:layout_height="128dp"></ImageView>
+                android:layout_height="128dp">
+            </ImageView>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -78,10 +83,11 @@
 
                     android:layout_margin="8dp"
 
-                    android:text=""
+                    android:text="@string/loading"
                     android:textColor="@color/white"
                     android:textSize="18dp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold">
+                </TextView>
 
                 <TextView
                     android:id="@+id/total_season"
@@ -90,14 +96,16 @@
 
                     android:layout_margin="8dp"
 
-                    android:text=""
+                    android:text="@string/loading"
                     android:textColor="@color/white"
-                    android:textSize="12dp"></TextView>
+                    android:textSize="12dp">
+                </TextView>
             </LinearLayout>
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/season_card_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -106,7 +114,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_rect_data"
 
-            >
+            app:layout_constraintVertical_bias="0"
+
+            tools:listitem="@layout/season_card">
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

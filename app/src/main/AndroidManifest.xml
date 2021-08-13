@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_main_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PVts">
-        <activity android:name=".activity.SeasonPageActivity"></activity>
+        <activity android:name=".activity.EpisodePageActivity"></activity>
+        <activity android:name=".activity.SeasonPageActivity" />
         <activity android:name=".activity.VideoPageActivity" />
         <activity android:name=".activity.MainMenuActivity" />
         <activity
