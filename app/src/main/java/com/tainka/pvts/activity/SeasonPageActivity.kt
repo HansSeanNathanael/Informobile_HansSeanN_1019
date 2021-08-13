@@ -35,9 +35,16 @@ class SeasonPageActivity : AppCompatActivity() {
 
         binding = ActivitySeasonPageBinding.inflate(layoutInflater)
 
+        binding.movieTitle.text = movie.title
+        binding.totalSeason.text = "Total season: ${movie.seasonAmount}"
+
         binding.moviePoster.setBackgroundResource(R.drawable.loading_animation)
         var image = binding.moviePoster.background as AnimationDrawable
         image.start()
+
+        thread {
+            processPoster()
+        }
 
         seasonCardAdapter = SeasonViewAdapter()
         seasonCardAdapter.setParentActivity(this)
@@ -85,10 +92,11 @@ class SeasonPageActivity : AppCompatActivity() {
         {
             try
             {
-                var connection = URL(movie.url)
+                var connection = URL("http://192.168.100.8/${movie.url}/poster")
                 var bitmap = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
 
                 runOnUiThread {
+                    (binding.moviePoster.background as AnimationDrawable).stop()
                     binding.moviePoster.setImageBitmap(bitmap)
                 }
             }
