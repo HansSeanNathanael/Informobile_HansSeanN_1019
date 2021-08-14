@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    android:minWidth="256dp"
+    android:minHeight="32dp"
+
+    android:backgroundTint="@color/black">
+
+    <TextView
+        android:id="@+id/episode_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_marginStart="8dp"
+        android:layout_gravity="center_vertical"
+
+        android:text="@string/loading"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:textColor="@color/primaryColor">
+    </TextView>
+
+</com.google.android.material.card.MaterialCardView>

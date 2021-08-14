@@ -14,10 +14,9 @@ import java.io.IOException
 import java.net.URL
 import kotlin.concurrent.thread
 
-class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
+class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
 
     private val listMovieCard = ArrayList<DataMovie>()
-    private var mainMenuActivity = MainMenuActivity()
 
     fun setParentActivity(parentActivity : MainMenuActivity)
     {
@@ -77,7 +76,7 @@ class HomeViewAdapter : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
                 }
             }
 
-            Log.d("bind", data.toString())
+            //Log.d("bind", data.toString())
         }
     }
 

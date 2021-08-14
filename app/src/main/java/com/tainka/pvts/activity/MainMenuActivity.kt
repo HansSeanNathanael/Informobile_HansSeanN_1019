@@ -64,8 +64,7 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        homeMovieCardAdapter = HomeViewAdapter()
-        homeMovieCardAdapter.setParentActivity(this)
+        homeMovieCardAdapter = HomeViewAdapter(this)
 
         binding.listCardView.apply {
             layoutManager = LinearLayoutManager(this@MainMenuActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -140,6 +139,13 @@ class MainMenuActivity : AppCompatActivity() {
         {
             val intent = Intent(this@MainMenuActivity, SeasonPageActivity::class.java)
             intent.putExtra("movie", movie)
+            startActivity(intent)
+        }
+        else
+        {
+            val intent = Intent(this@MainMenuActivity, EpisodePageActivity::class.java)
+            intent.putExtra("movie", movie)
+            intent.putExtra("season_position", 1)
             startActivity(intent)
         }
     }

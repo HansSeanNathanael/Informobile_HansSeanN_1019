@@ -6,11 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tainka.pvts.data.DataSeasons
 import com.tainka.pvts.databinding.SeasonCardBinding
 
-class SeasonViewAdapter : RecyclerView.Adapter<SeasonViewAdapter.SeasonViewHolder>() {
+class SeasonViewAdapter(var seasonPageActivity : SeasonPageActivity) : RecyclerView.Adapter<SeasonViewAdapter.SeasonViewHolder>() {
 
     private val listSeasonCard = ArrayList<DataSeasons>()
-
-    private lateinit var seasonPageActivity : SeasonPageActivity
 
     fun setListItem(list : List<DataSeasons>)
     {
@@ -28,15 +26,17 @@ class SeasonViewAdapter : RecyclerView.Adapter<SeasonViewAdapter.SeasonViewHolde
     inner class SeasonViewHolder(private val binding : SeasonCardBinding) : RecyclerView.ViewHolder(binding.root)
     {
         private lateinit var dataSeasons : DataSeasons
+        var pos = 0
 
-        fun bind(data : DataSeasons)
+        fun bind(data : DataSeasons, position: Int)
         {
+            pos = position + 1
             dataSeasons = data
-            binding.episodeTitle.text = dataSeasons.title
+            binding.seasonTitle.text = dataSeasons.title
 
             binding.root.setOnClickListener {
                 seasonPageActivity.apply {
-                    this.processPage(dataSeasons)
+                    this.processPage(dataSeasons, pos)
                 }
             }
         }
@@ -50,7 +50,7 @@ class SeasonViewAdapter : RecyclerView.Adapter<SeasonViewAdapter.SeasonViewHolde
 
     override fun onBindViewHolder(holder: SeasonViewHolder, position: Int) {
         var dataSeasons = listSeasonCard[position]
-        holder.bind(dataSeasons)
+        holder.bind(dataSeasons, position)
     }
 
     override fun getItemCount(): Int {

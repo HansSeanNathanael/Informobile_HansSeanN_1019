@@ -46,20 +46,17 @@ class SeasonPageActivity : AppCompatActivity() {
             processPoster()
         }
 
-        seasonCardAdapter = SeasonViewAdapter()
-        seasonCardAdapter.setParentActivity(this)
+        seasonCardAdapter = SeasonViewAdapter(this)
 
         binding.seasonCardList.apply {
             layoutManager = LinearLayoutManager(this@SeasonPageActivity, LinearLayoutManager.VERTICAL, false)
             adapter = seasonCardAdapter
-            visibility = View.VISIBLE
         }
 
         thread {
             var listSeasons = getSeasonData()
             runOnUiThread {
                 seasonCardAdapter.setListItem(listSeasons)
-                binding.seasonCardList.visibility = View.VISIBLE
             }
         }
 
@@ -107,13 +104,23 @@ class SeasonPageActivity : AppCompatActivity() {
         }
     }
 
-    fun processPage(seasons: DataSeasons)
+    fun processPage(seasons: DataSeasons, position : Int)
     {
         if (seasons.totalEpisode == 1)
         {
             val intent = Intent(this@SeasonPageActivity, VideoPageActivity::class.java)
             intent.putExtra("movie", movie)
-            intent.putExtra("season", movie)
+            intent.putExtra("season", seasons)
+            intent.putExtra("season_position", position)
+
+            startActivity(intent)
+        }
+        else
+        {
+            val intent = Intent(this@SeasonPageActivity, EpisodePageActivity::class.java)
+            intent.putExtra("movie", movie)
+            intent.putExtra("season", seasons)
+            intent.putExtra("season_position", position)
 
             startActivity(intent)
         }
