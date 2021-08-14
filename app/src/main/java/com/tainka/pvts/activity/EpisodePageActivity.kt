@@ -12,6 +12,7 @@ import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.data.DataSeasons
 import com.tainka.pvts.databinding.ActivityEpisodePageBinding
 import com.tainka.pvts.utilities.JSONEncodeParser
+import com.tainka.pvts.utilities.LoadingCard
 import java.io.IOException
 import java.net.URL
 import kotlin.concurrent.thread
@@ -47,6 +48,11 @@ class EpisodePageActivity : AppCompatActivity() {
             adapter = episodeCardAdapter
         }
 
+        if (dataSeasons.season_id != -1)
+        {
+            episodeCardAdapter.setListItem(LoadingCard.EpisodeCard.getEpisodeCard(dataSeasons.totalEpisode))
+        }
+
         binding.movieTitle.text = dataMovie.title
 
         if (dataSeasons.season_id != -1)
@@ -68,6 +74,8 @@ class EpisodePageActivity : AppCompatActivity() {
                 runOnUiThread {
                     binding.season.text = "Season: $seasonPosition/${dataMovie.seasonAmount}"
                     binding.totalEpisode.text = "Total episode: ${dataSeasons.totalEpisode}"
+
+                    episodeCardAdapter.setListItem(LoadingCard.EpisodeCard.getEpisodeCard(dataSeasons.totalEpisode))
                 }
 
                 val listItem = getEpisodeData()

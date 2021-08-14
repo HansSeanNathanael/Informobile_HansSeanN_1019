@@ -13,6 +13,7 @@ import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.databinding.ActivityMainMenuBinding
 import com.tainka.pvts.utilities.DummyCardViewTest
 import com.tainka.pvts.utilities.JSONEncodeParser
+import com.tainka.pvts.utilities.LoadingCard
 import java.io.IOException
 import java.net.URL
 import java.util.*
@@ -71,7 +72,7 @@ class MainMenuActivity : AppCompatActivity() {
             adapter = homeMovieCardAdapter
         }
 
-        homeMovieCardAdapter.setList(DummyCardViewTest.GetMovieCard())
+        homeMovieCardAdapter.setList(LoadingCard.MovieCard.getMovieCard())
 
         thread {
             val url = "http://192.168.100.8/PVTS/home_video_poster.php?retrieve=1"

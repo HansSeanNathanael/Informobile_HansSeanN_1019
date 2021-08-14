@@ -12,6 +12,7 @@ import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.data.DataSeasons
 import com.tainka.pvts.databinding.ActivitySeasonPageBinding
 import com.tainka.pvts.utilities.JSONEncodeParser
+import com.tainka.pvts.utilities.LoadingCard
 import java.io.IOException
 import java.net.URL
 import kotlin.concurrent.thread
@@ -52,6 +53,8 @@ class SeasonPageActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SeasonPageActivity, LinearLayoutManager.VERTICAL, false)
             adapter = seasonCardAdapter
         }
+
+        seasonCardAdapter.setListItem(LoadingCard.SeasonCard.getSeasonCard(movie.seasonAmount))
 
         thread {
             var listSeasons = getSeasonData()

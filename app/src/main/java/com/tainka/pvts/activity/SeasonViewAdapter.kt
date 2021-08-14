@@ -34,9 +34,12 @@ class SeasonViewAdapter(var seasonPageActivity : SeasonPageActivity) : RecyclerV
             dataSeasons = data
             binding.seasonTitle.text = dataSeasons.title
 
-            binding.root.setOnClickListener {
-                seasonPageActivity.apply {
-                    this.processPage(dataSeasons, pos)
+            if (dataSeasons.season_id != -1)
+            {
+                binding.root.setOnClickListener {
+                    seasonPageActivity.apply {
+                        this.processPage(dataSeasons, pos)
+                    }
                 }
             }
         }

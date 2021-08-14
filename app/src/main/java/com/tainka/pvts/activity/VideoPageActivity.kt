@@ -37,7 +37,7 @@ class VideoPageActivity : AppCompatActivity() {
         dataSeasons = intent.getSerializableExtra("season") as? DataSeasons ?: DataSeasons()
         dataEpisode = intent.getSerializableExtra("episode") as? DataEpisodes ?: DataEpisodes()
 
-        seasonPosition = intent.getIntExtra("season_osition", 0)
+        seasonPosition = intent.getIntExtra("season_position", 0)
         episodePosition = intent.getIntExtra("episode_position", 1)
 
         binding.imagePoster.setBackgroundResource(R.drawable.loading_animation)
@@ -115,51 +115,50 @@ class VideoPageActivity : AppCompatActivity() {
     }
 
     private fun loadVideo() {
-        thread {
-            if (dataEpisode.id == -1)
+        if (dataEpisode.id == -1)
+        {
+
+            val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_id=${dataSeasons.season_id}")
+
+            if (result.size == 1)
             {
-
-                val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_id=${dataSeasons.season_id}")
-
-                if (result.size == 1)
+                val videoData = result[0]
+                if (videoData is List<*> && videoData.size == 3)
                 {
-                    val videoData = result[0]
-                    if (videoData is List<*> && videoData.size == 3)
-                    {
-                        dataEpisode.changeData(
-                            (videoData[0] as String).toInt(),
-                            videoData[1] as String,
-                            videoData[2] as String)
-                    }
-                    else
-                    {
-                        throw UnsupportedOperationException()
-                    }
+                    dataEpisode.changeData(
+                        (videoData[0] as String).toInt(),
+                        videoData[1] as String,
+                        videoData[2] as String)
                 }
                 else
                 {
                     throw UnsupportedOperationException()
                 }
+            }
+            else
+            {
+                throw UnsupportedOperationException()
+            }
 
-                runOnUiThread {
-                    if (dataMovie.seasonAmount >= 2) {
-                        binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
-                    } else {
-                        binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataEpisode.fileName}")
-                    }
-                    binding.videoPlayer.start()
+            runOnUiThread {
+                if (dataMovie.seasonAmount >= 2) {
+                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
+                } else {
+                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataEpisode.fileName}")
                 }
-            } else {
-                runOnUiThread {
-                    if (dataMovie.seasonAmount >= 2) {
-                        binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
-                    } else {
-                        binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataEpisode.fileName}")
-                    }
-                    binding.videoPlayer.start()
+                binding.videoPlayer.start()
+            }
+        } else {
+            runOnUiThread {
+                if (dataMovie.seasonAmount >= 2) {
+                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
+                } else {
+                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataEpisode.fileName}")
                 }
+                binding.videoPlayer.start()
             }
         }
+
     }
 
     private fun loadPoster()

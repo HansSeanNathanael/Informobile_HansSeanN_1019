@@ -34,9 +34,11 @@ class EpisodeViewAdapter(var episodePageActivity: EpisodePageActivity) : Recycle
             dataEpisodes = data
             binding.episodeTitle.text = dataEpisodes.title
 
-            binding.root.setOnClickListener {
-                episodePageActivity.apply {
-                    this.processPage(dataEpisodes, pos)
+            if (dataEpisodes.id != -1) {
+                binding.root.setOnClickListener {
+                    episodePageActivity.apply {
+                        this.processPage(dataEpisodes, pos)
+                    }
                 }
             }
         }
