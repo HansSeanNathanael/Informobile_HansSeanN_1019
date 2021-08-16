@@ -75,7 +75,7 @@ class MainMenuActivity : AppCompatActivity() {
         homeMovieCardAdapter.setList(LoadingCard.MovieCard.getMovieCard())
 
         thread {
-            val url = "http://192.168.100.8/PVTS/home_video_poster.php?retrieve=1"
+            val url = "${getString(R.string.server)}/PVTS/home_video_poster.php?retrieve=1"
 
             val homeMovieCardDataMovie = getHomeMovieCard(url)
 
@@ -103,9 +103,9 @@ class MainMenuActivity : AppCompatActivity() {
 
     fun getHomeMovieCard(url: String) : List<DataMovie>
     {
-        var homeMovieCardDataMovie : MutableList<DataMovie> = mutableListOf()
+        val homeMovieCardDataMovie : MutableList<DataMovie> = mutableListOf()
 
-        var jsonArrayFromNetwork = JSONEncodeParser.retrieveJSONArrayFromNetwork(url)
+        val jsonArrayFromNetwork = JSONEncodeParser.retrieveJSONArrayFromNetwork(url)
 
         for (i in jsonArrayFromNetwork)
         {

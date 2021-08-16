@@ -41,12 +41,12 @@ class MainActivity : AppCompatActivity() {
             if (JSON[i] == '"')
             {
                 var str = ""
-                i++;
+                i++
 
                 while(JSON[i] != '"')
                 {
                     str += JSON[i]
-                    i++;
+                    i++
                 }
                 returnVal.add(str)
             }
@@ -122,13 +122,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         val emailInput = binding.emailEditText.text.toString()
-        var passwordInput = binding.passwordEditText.text.toString()
+        val passwordInput = binding.passwordEditText.text.toString()
 
         if (checkPassword(passwordInput))
         {
 
             // Encrypt password through URL
-            var url = "http://192.168.100.8/PVTS/encryption.php?text=" + passwordInput
+            var url = "${getString(R.string.server)}/PVTS/encryption.php?text=$passwordInput"
 
             // Trim the text from URL (just take json_encode)
             var jsonText = getNetworkText(url)
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 var parsedJSON : List<String> = parseJSON(jsonText) // Parse JSON from URL to get encrypted password
 
                 // accessing login url
-                url = "http://192.168.100.8/PVTS/login.php?" + "email=" + emailInput + "&password=" + parsedJSON[0]
+                url = "${getString(R.string.server)}/PVTS/login.php?" + "email=" + emailInput + "&password=" + parsedJSON[0]
                 jsonText = getNetworkText(url)
 
                 if (jsonText != "ERROR")

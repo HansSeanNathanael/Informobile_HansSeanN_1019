@@ -68,9 +68,9 @@ class SeasonPageActivity : AppCompatActivity() {
 
     private fun getSeasonData() : List<DataSeasons>
     {
-        var returnValue : MutableList<DataSeasons> = mutableListOf()
+        val returnValue : MutableList<DataSeasons> = mutableListOf()
 
-        var result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_from_movie_id=${movie.id}")
+        val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("${getString(R.string.server)}/PVTS/video_finder.php?season_from_movie_id=${movie.id}")
 
         for (i in result)
         {
@@ -92,17 +92,21 @@ class SeasonPageActivity : AppCompatActivity() {
         {
             try
             {
-                var connection = URL("http://192.168.100.8/${movie.url}/poster")
-                var bitmap = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
+                val connection = URL("${getString(R.string.server)}/${movie.url}/poster")
+                val bitmap = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
 
                 runOnUiThread {
                     (binding.moviePoster.background as AnimationDrawable).stop()
                     binding.moviePoster.setImageBitmap(bitmap)
                 }
+                break
             }
             catch (e : IOException)
             {
-
+                if (e is NoSuchFileException)
+                {
+                    break
+                }
             }
         }
     }

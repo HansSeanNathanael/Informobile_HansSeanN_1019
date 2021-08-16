@@ -55,33 +55,8 @@ class VideoPageActivity : AppCompatActivity() {
     {
         // mendapatkan data season (jumlah season untuk jumlah episode dan directory)
         if (dataSeasons.season_id == -1)
-        {/*
-            //bila id season ada
-            var result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?get_season_data_id=${seasonID}")
-
-            if (result[0] is List<*>)
-            {
-                var data = result[0] as List<*>
-
-                if (data.size == 5)
-                {
-                    seasonData = DataSeasons(seasonID, data[2] as String, data[4] as String, (data[3] as String).toInt())
-                }
-                else
-                {
-                    throw java.lang.UnsupportedOperationException()
-                }
-            }
-            else
-            {
-                throw java.lang.UnsupportedOperationException()
-            }
-        }
-        else
-        {*/
-
-            // bila hanya diberi movie saja (untuk yang hanya 1 season atau movie)
-            val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_from_movie_id=${dataMovie.id}")
+        {
+            val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("${getString(R.string.server)}/PVTS/video_finder.php?season_from_movie_id=${dataMovie.id}")
 
             if (result.size == 1)
             {
@@ -118,7 +93,7 @@ class VideoPageActivity : AppCompatActivity() {
         if (dataEpisode.id == -1)
         {
 
-            val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_id=${dataSeasons.season_id}")
+            val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("${getString(R.string.server)}/PVTS/video_finder.php?season_id=${dataSeasons.season_id}")
 
             if (result.size == 1)
             {
@@ -139,25 +114,17 @@ class VideoPageActivity : AppCompatActivity() {
             {
                 throw UnsupportedOperationException()
             }
-
-            runOnUiThread {
-                if (dataMovie.seasonAmount >= 2) {
-                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
-                } else {
-                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataEpisode.fileName}")
-                }
-                binding.videoPlayer.start()
-            }
-        } else {
-            runOnUiThread {
-                if (dataMovie.seasonAmount >= 2) {
-                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
-                } else {
-                    binding.videoPlayer.setVideoPath("http://192.168.100.8/${dataMovie.url}/${dataEpisode.fileName}")
-                }
-                binding.videoPlayer.start()
-            }
         }
+
+        runOnUiThread {
+            if (dataMovie.seasonAmount >= 2) {
+                binding.videoPlayer.setVideoPath("${getString(R.string.server)}/${dataMovie.url}/${dataSeasons.directory}/${dataEpisode.fileName}")
+            } else {
+                binding.videoPlayer.setVideoPath("${getString(R.string.server)}/${dataMovie.url}/${dataEpisode.fileName}")
+            }
+            binding.videoPlayer.start()
+        }
+
 
     }
 
@@ -178,8 +145,8 @@ class VideoPageActivity : AppCompatActivity() {
         while(true)
         {
             try {
-                val connection = URL("http://192.168.100.8/${dataMovie.url}/poster")
-                var bitmap = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
+                val connection = URL("${getString(R.string.server)}/${dataMovie.url}/poster")
+                val bitmap = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
 
                 runOnUiThread {
                     (binding.imagePoster.background as AnimationDrawable).stop()
@@ -189,7 +156,10 @@ class VideoPageActivity : AppCompatActivity() {
             }
             catch (e : IOException)
             {
-
+                if (e is NoSuchFileException)
+                {
+                    break
+                }
             }
         }
     }

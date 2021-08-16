@@ -92,7 +92,7 @@ class EpisodePageActivity : AppCompatActivity() {
 
     private fun getSeasonData()
     {
-        var result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_from_movie_id=${dataMovie.id}")
+        var result = JSONEncodeParser.retrieveJSONArrayFromNetwork("${getString(R.string.server)}/PVTS/video_finder.php?season_from_movie_id=${dataMovie.id}")
         if (result.size == 1 && result[0] is List<*>)
         {
             var data = result[0]
@@ -107,7 +107,7 @@ class EpisodePageActivity : AppCompatActivity() {
     {
         val returnValue : MutableList<DataEpisodes> = mutableListOf()
 
-        val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("http://192.168.100.8/PVTS/video_finder.php?season_id=${dataSeasons.season_id}")
+        val result = JSONEncodeParser.retrieveJSONArrayFromNetwork("${getString(R.string.server)}/PVTS/video_finder.php?season_id=${dataSeasons.season_id}")
 
         for (i in result)
         {
@@ -131,9 +131,9 @@ class EpisodePageActivity : AppCompatActivity() {
         {
             try
             {
-                val connection = URL("http://192.168.100.8/${dataMovie.url}/poster")
+                val connection = URL("${getString(R.string.server)}/${dataMovie.url}/poster")
 
-                var image = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
+                val image = BitmapFactory.decodeStream(connection.openConnection().getInputStream())
 
                 runOnUiThread {
                     (binding.moviePoster.background as AnimationDrawable).stop()
@@ -143,7 +143,10 @@ class EpisodePageActivity : AppCompatActivity() {
             }
             catch (e : IOException)
             {
-
+                if (e is NoSuchFileException)
+                {
+                    break
+                }
             }
         }
     }

@@ -54,9 +54,7 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
 
             if (threadLoadPoster.isAlive)
             {
-                Log.d("Thread size (before)", Thread.getAllStackTraces().size.toString())
                 threadLoadPoster.interrupt()
-                Log.d("Thread size (after)", Thread.getAllStackTraces().size.toString())
             }
 
             threadLoadPoster = thread {
@@ -66,9 +64,9 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
                 {
                     try
                     {
-                        val bitmapStream = URL("http://192.168.100.8/" + movie.url + "/poster").openConnection().getInputStream()
+                        val bitmapStream = URL("${mainMenuActivity.getString(R.string.server)}/${movie.url}/poster").openConnection().getInputStream()
 
-                        val newPoster : Bitmap
+                        val newPoster : Bitmap?
 
                         try
                         {
