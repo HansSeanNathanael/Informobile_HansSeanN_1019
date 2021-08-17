@@ -4,22 +4,32 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.AnimationDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import android.widget.MediaController
+import android.widget.SeekBar
 import com.tainka.pvts.R
 import com.tainka.pvts.data.DataEpisodes
 import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.data.DataSeasons
 import com.tainka.pvts.databinding.ActivityVideoPageBinding
 import com.tainka.pvts.utilities.JSONEncodeParser
+import com.tainka.pvts.utilities.SeekBarChangeListener
+import com.tainka.pvts.utilities.TimeBinderControllPlayer
+import com.tainka.pvts.utilities.TouchVideoPlayerListener
 import java.io.IOException
 import java.net.URL
+import java.util.*
 import kotlin.concurrent.thread
 
 class VideoPageActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityVideoPageBinding
+
+    var handler = Handler(Looper.getMainLooper())
 
     private var seasonPosition = 0
     private var episodePosition = 0
@@ -27,6 +37,17 @@ class VideoPageActivity : AppCompatActivity() {
     private lateinit var dataSeasons : DataSeasons
     private lateinit var dataMovie : DataMovie
     private lateinit var dataEpisode : DataEpisodes
+
+    lateinit var timeBinderControllPlayer : TimeBinderControllPlayer
+
+    private var hideControllTimer = object  : CountDownTimer(5000, 1000) {
+        override fun onTick(p0: Long) {
+        }
+
+        override fun onFinish() {
+            binding.playerController.root.visibility = View.INVISIBLE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +69,50 @@ class VideoPageActivity : AppCompatActivity() {
             initDataVideo()
         }
 
+        timeBinderControllPlayer = TimeBinderControllPlayer(this, binding)
+        var seekBarChangeListener = SeekBarChangeListener(this, binding)
+
+        binding.videoPlayer.setOnPreparedListener {
+            binding.playerController.buttonPlay.setImageResource(R.drawable.ic_pause)
+
+            val duration = binding.videoPlayer.duration
+            var hourColoumn = false
+            if (duration / 3600000 > 0)
+            {
+                hourColoumn = true
+            }
+            val durationText = getDuration(duration)
+
+            binding.playerController.time.text = "${seekBarChangeListener.getCurrentTimePosition(hourColoumn, 0)}/$durationText"
+            binding.playerController.seekbar.max = duration
+
+            seekBarChangeListener.initTime(hourColoumn, durationText)
+
+            binding.playerController.seekbar.setOnSeekBarChangeListener(seekBarChangeListener)
+
+            binding.playerController.buttonPlay.setOnClickListener {
+                playButtonPressed()
+            }
+
+            handler.postDelayed(timeBinderControllPlayer, 100)
+
+        }
+
+        binding.videoPlayer.setOnCompletionListener {
+            binding.playerController.buttonPlay.setOnClickListener(null)
+        }
+
+
+        val touchVideoPlayerListener = TouchVideoPlayerListener(this, binding, hideControllTimer)
+
+        binding.videoPlayer.setOnTouchListener(touchVideoPlayerListener)
+
         setContentView(binding.root)
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(timeBinderControllPlayer)
+        super.onDestroy()
     }
 
     private fun initDataVideo()
@@ -162,5 +226,44 @@ class VideoPageActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun getDuration(time : Int) : String
+    {
+        val hour = time / 3600000
+        val minute = (time % 3600000) / 60000
+        val second = (time % 60000) / 1000
+        if (hour > 0)
+        {
+            return String.format("%02d:%02d:%02d", hour, minute, second)
+        }
+        else
+        {
+            return String.format("%02d:%02d", minute, second)
+        }
+    }
+
+    private fun playButtonPressed()
+    {
+        if (binding.videoPlayer.isPlaying)
+        {
+            pauseVideo()
+        }
+        else
+        {
+            resumeVideo()
+        }
+    }
+
+    fun pauseVideo()
+    {
+        binding.videoPlayer.pause()
+        binding.playerController.buttonPlay.setImageResource(R.drawable.ic_play_arrow)
+    }
+
+    fun resumeVideo()
+    {
+        binding.videoPlayer.start()
+        binding.playerController.buttonPlay.setImageResource(R.drawable.ic_pause)
     }
 }

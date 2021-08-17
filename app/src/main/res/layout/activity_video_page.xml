@@ -31,9 +31,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
         android:background="@color/backgroundColor">
 
         <VideoView
@@ -42,9 +39,6 @@
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="@string/video_player_ratio"
 
-            android:layout_margin="16dp"
-
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -52,6 +46,21 @@
 
             app:layout_constraintVertical_bias="0">
         </VideoView>
+
+        <include
+            android:id="@+id/player_controller"
+            layout="@layout/media_controller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="@+id/video_player"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintVertical_bias="1"
+            android:visibility="visible">
+        </include>
 
         <LinearLayout
             android:id="@+id/episode_rect_data"

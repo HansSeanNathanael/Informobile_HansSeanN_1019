@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="32dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+
+        android:alpha="0.5"
+        android:background="@color/black">
+    </ImageView>
+
+    <ImageButton
+        android:id="@+id/button_play"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+
+        android:layout_marginLeft="8dp"
+        android:layout_alignParentLeft="true"
+
+        android:background="@drawable/button_border"
+        android:backgroundTint="@color/primaryColor"
+        android:src="@drawable/ic_play_arrow"
+        android:tint="@color/primaryColor">
+    </ImageButton>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+
+        android:layout_toRightOf="@id/button_play"
+
+        android:layout_marginLeft="8dp"
+
+        android:gravity="center"
+        android:textColor="@color/primaryColor"
+        android:textSize="16dp"
+        android:text="@string/time_player">
+    </TextView>
+
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+
+        android:thumbTint="@color/primaryColor"
+        android:progressBackgroundTint="@color/white"
+
+        android:layout_toRightOf="@id/time"
+        android:layout_toLeftOf="@id/button_fullscreen">
+    </SeekBar>
+
+    <ImageButton
+        android:id="@+id/button_fullscreen"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+
+        android:layout_marginRight="8dp"
+        android:layout_alignParentRight="true"
+
+        android:background="@drawable/button_border"
+        android:backgroundTint="@color/primaryColor"
+        android:src="@drawable/ic_fullscreen_enter"
+        android:tint="@color/primaryColor">
+    </ImageButton>
+
+
+</RelativeLayout>
