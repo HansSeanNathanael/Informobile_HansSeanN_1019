@@ -14,6 +14,8 @@
     <color name="redError">#db2323</color>
     <color name="settingMenuColor">#242424</color>
     <color name="movieCardBackgroundColor">#2b304a</color>
+    <color name="progressBarVideoPlayer">#00c8ff</color>
+    <color name="secondaryProgressBarVideoPlayer">#00ff26</color>
 
 
     <color name="ic_main_icon_background">#1D1D1D</color>

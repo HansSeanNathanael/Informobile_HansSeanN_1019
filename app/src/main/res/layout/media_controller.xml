@@ -48,6 +48,8 @@
 
         android:thumbTint="@color/primaryColor"
         android:progressBackgroundTint="@color/white"
+        android:progressTint="@color/progressBarVideoPlayer"
+        android:secondaryProgressTint="@color/secondaryProgressBarVideoPlayer"
 
         android:layout_toRightOf="@id/time"
         android:layout_toLeftOf="@id/button_fullscreen">

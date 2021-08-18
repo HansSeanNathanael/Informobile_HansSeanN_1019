@@ -1,14 +1,17 @@
 package com.tainka.pvts.activity
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.drawable.AnimationDrawable
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowManager
+import android.view.WindowMetrics
 import android.widget.MediaController
 import android.widget.SeekBar
 import com.tainka.pvts.R
@@ -40,15 +43,6 @@ class VideoPageActivity : AppCompatActivity() {
 
     lateinit var timeBinderControllPlayer : TimeBinderControllPlayer
 
-    private var hideControllTimer = object  : CountDownTimer(5000, 1000) {
-        override fun onTick(p0: Long) {
-        }
-
-        override fun onFinish() {
-            binding.playerController.root.visibility = View.INVISIBLE
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -70,7 +64,16 @@ class VideoPageActivity : AppCompatActivity() {
         }
 
         timeBinderControllPlayer = TimeBinderControllPlayer(this, binding)
-        var seekBarChangeListener = SeekBarChangeListener(this, binding)
+        val seekBarChangeListener = SeekBarChangeListener(this, binding)
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            exitFullScreenMode()
+        }
+        else
+        {
+            enterFullScreenMode()
+        }
 
         binding.videoPlayer.setOnPreparedListener {
             binding.playerController.buttonPlay.setImageResource(R.drawable.ic_pause)
@@ -95,15 +98,18 @@ class VideoPageActivity : AppCompatActivity() {
             }
 
             handler.postDelayed(timeBinderControllPlayer, 100)
-
         }
 
         binding.videoPlayer.setOnCompletionListener {
             binding.playerController.buttonPlay.setOnClickListener(null)
         }
 
+        binding.playerController.buttonFullscreen.setOnClickListener {
+            toggleFullscreen()
+        }
 
-        val touchVideoPlayerListener = TouchVideoPlayerListener(this, binding, hideControllTimer)
+
+        val touchVideoPlayerListener = TouchVideoPlayerListener(this, binding, 5000, 500)
 
         binding.videoPlayer.setOnTouchListener(touchVideoPlayerListener)
 
@@ -112,7 +118,22 @@ class VideoPageActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         handler.removeCallbacks(timeBinderControllPlayer)
+        binding.videoPlayer.stopPlayback()
         super.onDestroy()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            enterFullScreenMode()
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            exitFullScreenMode()
+        }
+        Log.d("TEs", "tes")
+        super.onConfigurationChanged(newConfig)
     }
 
     private fun initDataVideo()
@@ -265,5 +286,157 @@ class VideoPageActivity : AppCompatActivity() {
     {
         binding.videoPlayer.start()
         binding.playerController.buttonPlay.setImageResource(R.drawable.ic_pause)
+    }
+
+    fun toggleFullscreen()
+    {
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        else
+        {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+    }
+
+    private fun enterFullScreenMode()
+    {
+        binding.playerController.buttonFullscreen.setImageResource(R.drawable.ic_fullscreen_exit)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+
+            val displayMetrics = windowManager.currentWindowMetrics
+            val width = displayMetrics.bounds.width()
+            val height = displayMetrics.bounds.height()
+
+            val videoPlayerParam = binding.videoPlayer.layoutParams
+
+            val smallestPart : Int
+            if (width / 16 < height / 9)
+            {
+                smallestPart = width / 16
+            }
+            else
+            {
+                smallestPart = height / 9
+            }
+
+            videoPlayerParam.height = smallestPart * 16
+            videoPlayerParam.width = smallestPart * 9
+
+            binding.videoPlayer.layoutParams = videoPlayerParam
+
+        }
+        else
+        {
+            val displayMetrics = DisplayMetrics()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            {
+                window.insetsController?.hide(WindowInsets.Type.statusBars())
+
+                val display = this.display
+
+                @Suppress("DEPRECATION")
+                display?.getRealMetrics(displayMetrics)
+            }
+            else
+            {
+                @Suppress("DEPRECATION")
+                window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                @Suppress("DEPRECATION")
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+            }
+
+
+            val width = displayMetrics.widthPixels
+            val height = displayMetrics.heightPixels
+            val videoPlayerParam = binding.videoPlayer.layoutParams
+            val smallestPart : Int
+            if (width / 16 < height / 9)
+            {
+                smallestPart = width / 16
+            }
+            else
+            {
+                smallestPart = height / 9
+            }
+            videoPlayerParam.height = smallestPart * 9
+            videoPlayerParam.width = smallestPart * 16
+
+            binding.videoPlayer.layoutParams = videoPlayerParam
+        }
+
+    }
+
+    private fun exitFullScreenMode()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            window.insetsController?.show(WindowInsets.Type.statusBars())
+
+            val displayMetrics = windowManager.currentWindowMetrics
+
+            val videoPlayerParam = binding.videoPlayer.layoutParams
+            val width = displayMetrics.bounds.width()
+            val height = displayMetrics.bounds.height()
+            val smallest : Int
+            if (width / 16 < height / 9)
+            {
+                smallest = width / 16
+            }
+            else
+            {
+                smallest = height / 9
+            }
+            videoPlayerParam.width = smallest * 16
+            videoPlayerParam.height = smallest * 9
+            binding.videoPlayer.layoutParams = videoPlayerParam
+        }
+        else
+        {
+
+            val displayMetrics = DisplayMetrics()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            {
+                window.insetsController?.show(WindowInsets.Type.statusBars())
+
+                val display = this.display
+
+                @Suppress("DEPRECATION")
+                display?.getRealMetrics(displayMetrics)
+            }
+            else
+            {
+                @Suppress("DEPRECATION")
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+                @Suppress("DEPRECATION")
+                windowManager.defaultDisplay.getRealMetrics(displayMetrics)
+            }
+
+            val videoPlayerParam = binding.videoPlayer.layoutParams
+            val width = displayMetrics.widthPixels
+            val height = displayMetrics.heightPixels
+            val smallest : Int
+            if (width / 16 < height / 9)
+            {
+                smallest = width / 16
+            }
+            else
+            {
+                smallest = height / 9
+            }
+            videoPlayerParam.width = smallest * 16
+            videoPlayerParam.height = smallest * 9
+            binding.videoPlayer.layoutParams = videoPlayerParam
+
+        }
+        binding.playerController.buttonFullscreen.setImageResource(R.drawable.ic_fullscreen_exit)
     }
 }
