@@ -16,15 +16,15 @@ import java.lang.NullPointerException
 import java.net.URL
 import kotlin.concurrent.thread
 
-class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Adapter<HomeViewAdapter.HomeViewHolder>() {
+class CardListAdapter(var cardListActivity  : VideoCardListActivity) : RecyclerView.Adapter<CardListAdapter.CardViewHolder>() {
 
     private val listMovieCard = ArrayList<DataMovie>()
     private val listImagePoster = ArrayList<Bitmap?>()
-    var loadPosterThread = thread(false) {}
+    private var loadPosterThread = thread(false) {}
 
-    fun setParentActivity(parentActivity : MainMenuActivity)
+    fun setParentActivity(parentActivity : VideoCardListActivity)
     {
-        mainMenuActivity = parentActivity
+        cardListActivity = parentActivity
     }
 
     fun setList(list : List<DataMovie>)
@@ -53,11 +53,11 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
                 try
                 {
                     success = false
-                    while(!success)
+                    while (!success)
                     {
                         try
                         {
-                            val connection = URL("${mainMenuActivity.getString(R.string.server)}/${listMovieCard[i].url}/poster").openConnection()
+                            val connection = URL("${cardListActivity.getString(R.string.server)}/${listMovieCard[i].url}/poster").openConnection()
                             val poster = BitmapFactory.decodeStream(connection.getInputStream())
 
                             listImagePoster[i] = poster
@@ -71,7 +71,7 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
                                 interrupted = true
                                 break
                             }
-                            else if (e is NoSuchFileException)
+                            if (e is NoSuchFileException)
                             {
                                 break
                             }
@@ -86,20 +86,27 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
                 {
                     break
                 }
-                mainMenuActivity.runOnUiThread {
-                    notifyItemChanged(i)
+
+                if (success)
+                {
+
+                    cardListActivity.runOnUiThread {
+                        notifyItemChanged(i)
+                    }
                 }
             }
         }
 
+
+
         notifyDataSetChanged()
     }
 
-    inner class HomeViewHolder(private val binding: MovieCardBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class CardViewHolder(private val binding: MovieCardBinding) : RecyclerView.ViewHolder(binding.root)
     {
         lateinit var data : DataMovie
 
-        fun bind(movie : DataMovie, position : Int)
+        fun bind(movie : DataMovie, position: Int)
         {
             binding.movieTitle.text = movie.title
 
@@ -107,17 +114,18 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
 
             if (listImagePoster[position] != null)
             {
-                binding.movieImage.setImageBitmap(listImagePoster[position])
+                binding.movieImage.setImageBitmap(listImagePoster[adapterPosition])
             }
-            else if (binding.movieImage.background !is AnimationDrawable)
+            else
             {
                 binding.movieImage.setBackgroundResource(R.drawable.loading_animation)
+                binding.movieImage.setImageResource(android.R.color.transparent)
                 val animation = binding.movieImage.background as AnimationDrawable
                 animation.start()
             }
 
             binding.movieCard.setOnClickListener {
-                mainMenuActivity.apply {
+                cardListActivity.apply {
                     if (data.id != -1)
                     {
                         this.processPage(data)
@@ -125,17 +133,19 @@ class HomeViewAdapter(var mainMenuActivity : MainMenuActivity) : RecyclerView.Ad
                 }
             }
 
+            //Log.d("Thread size", Thread.getAllStackTraces().size.toString())
+
             //Log.d("bind", data.toString())
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val itemBinding = MovieCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return HomeViewHolder(itemBinding)
+        return CardViewHolder(itemBinding)
     }
 
-    override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         val movieData = listMovieCard[position]
         holder.bind(movieData, position)
     }

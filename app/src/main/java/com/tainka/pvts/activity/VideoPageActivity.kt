@@ -1,6 +1,5 @@
 package com.tainka.pvts.activity
 
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.drawable.AnimationDrawable
@@ -11,18 +10,13 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.view.WindowMetrics
-import android.widget.MediaController
-import android.widget.SeekBar
+import android.widget.RelativeLayout
 import com.tainka.pvts.R
 import com.tainka.pvts.data.DataEpisodes
 import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.data.DataSeasons
 import com.tainka.pvts.databinding.ActivityVideoPageBinding
-import com.tainka.pvts.utilities.JSONEncodeParser
-import com.tainka.pvts.utilities.SeekBarChangeListener
-import com.tainka.pvts.utilities.TimeBinderControllPlayer
-import com.tainka.pvts.utilities.TouchVideoPlayerListener
+import com.tainka.pvts.utilities.*
 import java.io.IOException
 import java.net.URL
 import java.util.*
@@ -42,6 +36,8 @@ class VideoPageActivity : AppCompatActivity() {
     private lateinit var dataEpisode : DataEpisodes
 
     lateinit var timeBinderControllPlayer : TimeBinderControllPlayer
+
+    private var fullScreenVideoPlayer = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,14 +62,7 @@ class VideoPageActivity : AppCompatActivity() {
         timeBinderControllPlayer = TimeBinderControllPlayer(this, binding)
         val seekBarChangeListener = SeekBarChangeListener(this, binding)
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-        {
-            exitFullScreenMode()
-        }
-        else
-        {
-            enterFullScreenMode()
-        }
+        fullScreenVideoPlayer = false
 
         binding.videoPlayer.setOnPreparedListener {
             binding.playerController.buttonPlay.setImageResource(R.drawable.ic_pause)
@@ -123,17 +112,9 @@ class VideoPageActivity : AppCompatActivity() {
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            enterFullScreenMode()
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
-        {
-            exitFullScreenMode()
-        }
-        Log.d("TEs", "tes")
         super.onConfigurationChanged(newConfig)
+
+        configureVideoPlayerSize()
     }
 
     private fun initDataVideo()
@@ -290,21 +271,45 @@ class VideoPageActivity : AppCompatActivity() {
 
     fun toggleFullscreen()
     {
-        val orientation = resources.configuration.orientation
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+        if (fullScreenVideoPlayer)
         {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            exitFullScreenMode()
         }
         else
         {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            enterFullScreenMode()
         }
+        fullScreenVideoPlayer = !fullScreenVideoPlayer
+
     }
 
     private fun enterFullScreenMode()
     {
         binding.playerController.buttonFullscreen.setImageResource(R.drawable.ic_fullscreen_exit)
 
+        val videoRectBoundParam = binding.videoRectBound.layoutParams as RelativeLayout.LayoutParams
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        binding.videoRectBound.layoutParams = videoRectBoundParam
+    }
+
+    private fun exitFullScreenMode()
+    {
+        val videoRectBoundParam = binding.videoRectBound.layoutParams as RelativeLayout.LayoutParams
+        videoRectBoundParam.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+        videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        binding.videoRectBound.layoutParams = videoRectBoundParam
+
+
+        binding.playerController.buttonFullscreen.setImageResource(R.drawable.ic_fullscreen_enter)
+    }
+
+    private fun configureVideoPlayerSize()
+    {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
         {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
@@ -315,18 +320,16 @@ class VideoPageActivity : AppCompatActivity() {
 
             val videoPlayerParam = binding.videoPlayer.layoutParams
 
-            val smallestPart : Int
-            if (width / 16 < height / 9)
+            if (width / 16 <= height / 9)
             {
-                smallestPart = width / 16
+                videoPlayerParam.width = WindowManager.LayoutParams.MATCH_PARENT
+                videoPlayerParam.height = width / 16 * 9
             }
             else
             {
-                smallestPart = height / 9
+                videoPlayerParam.width = height / 9 * 16
+                videoPlayerParam.height = WindowManager.LayoutParams.MATCH_PARENT
             }
-
-            videoPlayerParam.height = smallestPart * 16
-            videoPlayerParam.width = smallestPart * 9
 
             binding.videoPlayer.layoutParams = videoPlayerParam
 
@@ -370,73 +373,5 @@ class VideoPageActivity : AppCompatActivity() {
 
             binding.videoPlayer.layoutParams = videoPlayerParam
         }
-
-    }
-
-    private fun exitFullScreenMode()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
-            window.insetsController?.show(WindowInsets.Type.statusBars())
-
-            val displayMetrics = windowManager.currentWindowMetrics
-
-            val videoPlayerParam = binding.videoPlayer.layoutParams
-            val width = displayMetrics.bounds.width()
-            val height = displayMetrics.bounds.height()
-            val smallest : Int
-            if (width / 16 < height / 9)
-            {
-                smallest = width / 16
-            }
-            else
-            {
-                smallest = height / 9
-            }
-            videoPlayerParam.width = smallest * 16
-            videoPlayerParam.height = smallest * 9
-            binding.videoPlayer.layoutParams = videoPlayerParam
-        }
-        else
-        {
-
-            val displayMetrics = DisplayMetrics()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            {
-                window.insetsController?.show(WindowInsets.Type.statusBars())
-
-                val display = this.display
-
-                @Suppress("DEPRECATION")
-                display?.getRealMetrics(displayMetrics)
-            }
-            else
-            {
-                @Suppress("DEPRECATION")
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
-                @Suppress("DEPRECATION")
-                windowManager.defaultDisplay.getRealMetrics(displayMetrics)
-            }
-
-            val videoPlayerParam = binding.videoPlayer.layoutParams
-            val width = displayMetrics.widthPixels
-            val height = displayMetrics.heightPixels
-            val smallest : Int
-            if (width / 16 < height / 9)
-            {
-                smallest = width / 16
-            }
-            else
-            {
-                smallest = height / 9
-            }
-            videoPlayerParam.width = smallest * 16
-            videoPlayerParam.height = smallest * 9
-            binding.videoPlayer.layoutParams = videoPlayerParam
-
-        }
-        binding.playerController.buttonFullscreen.setImageResource(R.drawable.ic_fullscreen_exit)
     }
 }

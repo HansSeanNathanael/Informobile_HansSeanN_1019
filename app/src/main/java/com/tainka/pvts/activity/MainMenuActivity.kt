@@ -3,21 +3,15 @@ package com.tainka.pvts.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tainka.pvts.R
 import com.tainka.pvts.data.DataMovie
 import com.tainka.pvts.databinding.ActivityMainMenuBinding
-import com.tainka.pvts.utilities.DummyCardViewTest
 import com.tainka.pvts.utilities.JSONEncodeParser
 import com.tainka.pvts.utilities.LoadingCard
-import java.io.IOException
-import java.net.URL
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class MainMenuActivity : AppCompatActivity() {
@@ -27,7 +21,8 @@ class MainMenuActivity : AppCompatActivity() {
     private var _activityBinding : ActivityMainMenuBinding? = null
     private val binding get() = _activityBinding!!
 
-    private lateinit var homeMovieCardAdapter : HomeViewAdapter
+    private lateinit var homeMovieCardAdapterRecentlyAdded : HomeViewAdapter
+    private lateinit var homeMovieCardAdapterRecentlyUpdated : HomeViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -65,23 +60,54 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        homeMovieCardAdapter = HomeViewAdapter(this)
+        homeMovieCardAdapterRecentlyAdded = HomeViewAdapter(this)
+        homeMovieCardAdapterRecentlyUpdated = HomeViewAdapter(this)
 
         binding.listCardView.apply {
             layoutManager = LinearLayoutManager(this@MainMenuActivity, LinearLayoutManager.HORIZONTAL, false)
-            adapter = homeMovieCardAdapter
+            adapter = homeMovieCardAdapterRecentlyAdded
         }
 
-        homeMovieCardAdapter.setList(LoadingCard.MovieCard.getMovieCard())
+        binding.listCardView2.apply {
+            layoutManager = LinearLayoutManager(this@MainMenuActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = homeMovieCardAdapterRecentlyUpdated
+        }
 
-        thread {
+        homeMovieCardAdapterRecentlyAdded.setList(LoadingCard.MovieCard.getMovieCard())
+        homeMovieCardAdapterRecentlyUpdated.setList(LoadingCard.MovieCard.getMovieCard())
+
+        thread { // listCard Recently Added
             val url = "${getString(R.string.server)}/PVTS/home_video_poster.php?retrieve=1"
 
             val homeMovieCardDataMovie = getHomeMovieCard(url)
 
             this@MainMenuActivity.runOnUiThread {
-                homeMovieCardAdapter.setList(homeMovieCardDataMovie)
+                homeMovieCardAdapterRecentlyAdded.setList(homeMovieCardDataMovie)
             }
+        }
+
+        binding.buttonMoreRecentlyAdded.setOnClickListener {
+            val intent = Intent(this@MainMenuActivity, VideoCardListActivity::class.java)
+            intent.putExtra("URL", "${getString(R.string.server)}/PVTS/home_video_poster.php?retrieve=2&page=")
+            intent.putExtra("title", resources.getString(R.string.recently_added))
+            startActivity(intent)
+        }
+
+        thread { // list Card recently Updated
+            val url = "${getString(R.string.server)}/PVTS/home_video_poster.php?retrieve=3"
+
+            val homeMovieCardDataMovie = getHomeMovieCard(url)
+
+            this@MainMenuActivity.runOnUiThread {
+                homeMovieCardAdapterRecentlyUpdated.setList(homeMovieCardDataMovie)
+            }
+        }
+
+        binding.buttonMoreRecentlyUpdated.setOnClickListener {
+            val intent = Intent(this@MainMenuActivity, VideoCardListActivity::class.java)
+            intent.putExtra("URL", "${getString(R.string.server)}/PVTS/home_video_poster.php?retrieve=4&page=")
+            intent.putExtra("title", resources.getString(R.string.recently_updated))
+            startActivity(intent)
         }
 
         setContentView(binding.root)

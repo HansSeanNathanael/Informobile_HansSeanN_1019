@@ -20,21 +20,19 @@ object LoadingCard {
     }
 
     object MovieCard {
-        fun getMovieCard() : List<DataMovie>
+        fun getMovieCard(cardAmount : Int = 8) : List<DataMovie>
         {
             val returnValue : ArrayList<DataMovie> = arrayListOf()
 
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
-            returnValue.add(DataMovie(-1, "Loading", -1, ""))
+            for (i in 1..cardAmount)
+            {
+                returnValue.add(DataMovie(-1, "Loading", -1, ""))
+            }
 
             return returnValue
         }
+
+
     }
 
     object EpisodeCard {

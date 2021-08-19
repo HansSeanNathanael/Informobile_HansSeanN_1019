@@ -13,27 +13,23 @@
         android:roundIcon="@mipmap/ic_main_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PVts">
-
+        <activity android:name=".activity.VideoCardListActivity"></activity>
         <activity
             android:name=".activity.EpisodePageActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
-        </activity>
-
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:screenOrientation="fullSensor"></activity>
         <activity
             android:name=".activity.SeasonPageActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
-        </activity>
-
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:screenOrientation="fullSensor"></activity>
         <activity
             android:name=".activity.VideoPageActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
-        </activity>
-
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:screenOrientation="fullSensor"></activity>
         <activity
             android:name=".activity.MainMenuActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
-        </activity>
-
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:screenOrientation="fullSensor"></activity>
         <activity
             android:name=".activity.MainActivity"
             android:exported="true">

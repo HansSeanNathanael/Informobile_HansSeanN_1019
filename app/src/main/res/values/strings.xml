@@ -15,5 +15,7 @@
     <string name="loading">loading...</string>
     <string name="server">http://192.168.100.100</string>
     <string name="time_player">--:--</string>
-    <string name="recently_addad">Recently Added</string>
+    <string name="recently_added">Recently Added</string>
+    <string name="recently_updated">Recently Updated</string>
+    <string name="more">more...</string>
 </resources>
