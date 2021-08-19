@@ -90,6 +90,11 @@ class EpisodePageActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
+    override fun onDestroy() {
+        episodeCardAdapter.setListItem(listOf())
+        super.onDestroy()
+    }
+
     private fun getSeasonData()
     {
         var result = JSONEncodeParser.retrieveJSONArrayFromNetwork("${getString(R.string.server)}/PVTS/video_finder.php?season_from_movie_id=${dataMovie.id}")

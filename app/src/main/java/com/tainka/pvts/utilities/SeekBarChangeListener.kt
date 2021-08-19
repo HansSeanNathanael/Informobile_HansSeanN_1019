@@ -119,8 +119,8 @@ class TouchVideoPlayerListener(var videoPageActivity: VideoPageActivity, var bin
                 forwardTimer.start()
                 binding.videoPlayer.pause()
 
-                val xSize = binding.videoPlayer.layoutParams.width
-                val position = event.x / xSize.toFloat()
+                val xSize = binding.videoPlayer.measuredWidth
+                val position = event.rawX / xSize.toFloat()
                 if (position > 0 && position <= 0.5)
                 {
                     binding.videoPlayer.seekTo(binding.videoPlayer.currentPosition - 5000)

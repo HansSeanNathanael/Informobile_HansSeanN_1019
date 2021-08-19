@@ -63,6 +63,12 @@ class VideoPageActivity : AppCompatActivity() {
         val seekBarChangeListener = SeekBarChangeListener(this, binding)
 
         fullScreenVideoPlayer = false
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            fullScreenVideoPlayer = true
+            enterFullScreenMode()
+        }
 
         binding.videoPlayer.setOnPreparedListener {
             binding.playerController.buttonPlay.setImageResource(R.drawable.ic_pause)
@@ -113,6 +119,14 @@ class VideoPageActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        var orientation = resources.configuration.orientation
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            fullScreenVideoPlayer = true
+            enterFullScreenMode()
+        }
 
         configureVideoPlayerSize()
     }
@@ -285,6 +299,16 @@ class VideoPageActivity : AppCompatActivity() {
 
     private fun enterFullScreenMode()
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        }
+        else
+        {
+            @Suppress("DEPRECATION")
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+
         binding.playerController.buttonFullscreen.setImageResource(R.drawable.ic_fullscreen_exit)
 
         val videoRectBoundParam = binding.videoRectBound.layoutParams as RelativeLayout.LayoutParams
@@ -297,6 +321,16 @@ class VideoPageActivity : AppCompatActivity() {
 
     private fun exitFullScreenMode()
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            window.insetsController?.show(WindowInsets.Type.statusBars())
+        }
+        else
+        {
+            @Suppress("DEPRECATION")
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+
         val videoRectBoundParam = binding.videoRectBound.layoutParams as RelativeLayout.LayoutParams
         videoRectBoundParam.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         videoRectBoundParam.addRule(RelativeLayout.ALIGN_PARENT_TOP)
@@ -312,8 +346,6 @@ class VideoPageActivity : AppCompatActivity() {
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
         {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-
             val displayMetrics = windowManager.currentWindowMetrics
             val width = displayMetrics.bounds.width()
             val height = displayMetrics.bounds.height()
@@ -349,8 +381,6 @@ class VideoPageActivity : AppCompatActivity() {
             }
             else
             {
-                @Suppress("DEPRECATION")
-                window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 @Suppress("DEPRECATION")
                 windowManager.defaultDisplay.getMetrics(displayMetrics)
             }
